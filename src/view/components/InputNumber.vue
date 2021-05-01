@@ -44,6 +44,8 @@
                 amount: 0,
                 stepAmount: this.step ? parseInt(this.step) : 1,
                 minAmount: this.min ? parseInt(this.min) : 0,
+                stepMin: !!(this.min && this.step),
+                val: ''
             };
         },
         watch: {
@@ -66,16 +68,27 @@
                 if (!match && e.keyCode !== 8)
                     e.preventDefault();
 
+                this.val += match ? match.input : '';
+                this.val = e.keyCode === 8 ? this.val.slice(0, -1) : this.val;
                 return !!match;
             },
             stepChange(diff) {
-                this.amount = parseInt(this.amount) + diff;
+                this.amount = parseInt(this.val);
+
+                if(this.amount <= this.maxAmount && this.amount >= this.minAmount){
+                    if(this.stepMin)
+                        this.amount = parseInt(this.amount) + (diff - parseInt(this.amount) % this.minAmount % diff);
+                    else
+                        this.amount = parseInt(this.amount) + diff;
+                }
+
                 if (this.amount > this.maxAmount) {
                     this.amount = this.maxAmount;
                 } else if (this.amount < this.minAmount) {
                     this.amount = this.minAmount;
                 }
 
+                this.val = this.amount;
                 this.$forceUpdate();
             },
         },
