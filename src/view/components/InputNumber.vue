@@ -9,10 +9,12 @@
                    :readonly="readonly"
                    :disabled="disabled"
                    :value="currentValue"
-                   @keydown.delete="currentValue = currentValue.slice(0, -1)"
+                   @keydown.delete="deleteValue"
                    @keydown.up="stepChange(stepAmount)"
                    @keydown.down="stepChange(-stepAmount)"
-                   @input="handleKeyPress"/>
+                   @input="handleKeyPress"
+                   @select="selectValue"
+            />
 
             <div class="input__arrows">
                 <div class="input__arrow input__arrow--up" @click="stepChange(stepAmount)">
@@ -50,6 +52,8 @@
                 stepMin: !!(this.min && this.step),
                 val: this.value ? this.value : '0',
                 currentValue: this.value,
+                selectStart: 0,
+                selectLength: -1
             };
         },
         watch: {
@@ -61,7 +65,13 @@
             handleKeyPress(e) {
                 const allowedChars = new RegExp('^[a-z0-9]+$');
                 const match = allowedChars.test(e.data);
+
                 this.val = !!match ? this.currentValue + e.data : this.currentValue + '';
+            },
+
+            selectValue(e) {
+                this.selectStart = e.srcElement.selectionStart;
+                this.selectLength = e.srcElement.selectionEnd - e.srcElement.selectionStart;
             },
 
             stepChange(diff) {
@@ -87,6 +97,18 @@
                 this.currentValue = val;
                 this.val = this.currentValue;
                 this.$forceUpdate()
+            },
+
+            deleteValue() {
+                if (this.selectLength === -1)
+                    this.currentValue = this.currentValue.slice(0, -1);
+                else {
+                    this.currentValue = this.currentValue.substr(0, this.selectStart) +
+                        this.currentValue.substring(this.selectStart + this.selectLength)
+                }
+
+                this.selectStart = 0;
+                this.selectLength = -1;
             }
         },
     };
