@@ -48,7 +48,7 @@
                 stepAmount: this.step ? parseInt(this.step) : 1,
                 minAmount: this.min ? parseInt(this.min) : 0,
                 stepMin: !!(this.min && this.step),
-                val: '0',
+                val: this.value ? this.value : '0',
                 currentValue: this.value,
             };
         },

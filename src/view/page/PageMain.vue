@@ -1,6 +1,6 @@
 <template>
     <div class="page__main">
-        <input-number min="10" step="3" value="0"/>
+        <input-number min="10" step="3" value="5"/>
     </div>
 </template>
 
