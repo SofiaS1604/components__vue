@@ -79,6 +79,8 @@
                 if (this.val <= this.maxAmount && this.val >= this.minAmount)
                     this.val += this.stepMin ? diff - this.val % this.minAmount % diff : diff;
 
+                this.stepMin = this.stepMin ? !this.stepMin : this.stepMin;
+
                 if (this.val > this.maxAmount) {
                     this.val = this.maxAmount;
                 } else if (this.val < this.minAmount) {
